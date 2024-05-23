@@ -1,0 +1,281 @@
+{% extends 'myapp/base.html' %} {% load embed_video_tags %} {%block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div id="movie-hidden" class="hide">{{movie.id}}</div>
+        <div id="viewer-hidden" class="hide">{{user.id}}</div>
+        <div class="row white-fg ">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <div class="d-flex" style="justify-content: center;">
+                    <div class="thumbnail">
+                        <img src="{{movie.poster}}" alt="image" class='img img-responsive' height="500vh" width="300vw" style="border-radius: 5%;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="text-center" style="display: block; margin:0px; padding: 0px; font-size: 5vh; font-family: 'Berkshire Swash', cursive; color: white;">{{movie.title}}</label>
+                <p class="text-center" style="color: orange;">{{movie.genre}}</p>
+                <hr>
+                <p>
+                    <i class="bi bi-star-fill" style="line-height: 0.5; font-size: 2rem; color: gold"></i> {% if movie.rating %}
+                    <b style="font-size: 1.4em; color: white;"> {{movie.rating}}/10</b> {% else %}
+                    <b> No ratings</b> {% endif %}
+                    <i class="bi bi-people-fill" style="margin-left:30px; line-height: 0.5; font-size: 2rem; color: gold"></i>
+                    <b style="font-size: 1.4em; color: #ffffff;">{{no_of_ratings}}</b>
+                </p>
+                <p class="sky-fg">Release Year: <span style="color:yellow">{{movie.year}}</span></p>
+                <p class="sky-fg">Language: <span style="color:yellow">{{movie.lang}}</span></p>
+                <p class="sky-fg">Running time: <span style="color:yellow">{{movie.runtime}}</span></p>
+                <p class="sky-fg">Budget: <span style="color:yellow">${{movie.budget}}</span> ✪ Revenue: <span style="color:yellow">${{movie.revenue}}</span></p>
+                <p class="sky-fg">Director: <span style="color:yellow">{{movie.director}}</span></p>
+
+                <h4 style="font-family: 'Arial Narrow Bold', sans-serif; color: white;">
+                    <i class="bi bi-filter-right" style="margin-right: 3px; color: white;"></i> Overview:
+                </h4>
+                <div>
+                    <p class='plot' style="color: white;">{{movie.plot}}</p>
+                </div>
+                <div class="d-flex justify-content-center">
+                    {% if vm.watched == 1%}
+                    <button class="btn btn-warning m-1" id='watchbtn'>Remove from WatchList</button> {% else %}
+                    <button class="btn btn-warning m-1" id='watchbtn'>Add to WatchList</button> {% endif %} {% if vm.favourite == 1 %}
+                    <button class="btn btn-primary m-1" id='favbtn'>Remove from Favourites</button> {% else %}
+                    <button class="btn btn-primary m-1" id='favbtn'>Add to Favourites</button> {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <hr style="color: palegreen;">
+            </div>
+        </div>
+        <h3 class="text-center white-fg" style="color: aquamarine;">Director</h3>
+        <div style="overflow-x: auto; justify-content: center">
+            <div class="d-flex flex-nowrap" style="width: 100%; justify-content: center;">
+                {% for director, img in movie.director_and_img %}
+                <div class="col-md-2">
+                    <div class="card mb-2">
+                        <img src="{{img}}" alt="{{director}}" class="card-img-top" style="border-radius: 5%; width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{director}}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <style>
+            .card {
+                background-color: black;
+                max-width: 200px;
+            }
+            
+            .card-title {
+                color: white;
+                font-weight: bold;
+                text-align: center;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            
+            .card-img-top {
+                object-fit: cover;
+            }
+            
+            .col-md-2 {
+                flex-shrink: 0;
+            }
+        </style>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <hr style="color: palegreen;">
+            </div>
+        </div>
+        <h3 class="text-center white-fg" style="color: aquamarine;">Top Billed Cast</h3>
+        <div style="overflow-x: auto; white-space: nowrap;">
+            <div class="row white-fg" style="justify-content: center">
+                {% for top_cast, img in movie.top_cast_and_img %}
+                <div class="col-md-2">
+                    <div class="card mb-2">
+                        <img src="{{img}}" alt="{{top_cast}}" class="card-img-top" style="border-radius: 5%; width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{top_cast}}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <hr style="color: palegreen;">
+            </div>
+        </div>
+        <h3 class="text-center white-fg" style="color: aquamarine;">Rate this movie:</h3>
+        <div class="row white-fg d-flex" style="justify-content: center;">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="ratingselect">Rate</label>
+                    <select class="form-select" id="ratingselect">
+                    <option selected value="N">Choose...</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center m-2">
+                <button class="btn btn-info" id="submitrating">Submit Rating</button>
+
+            </div>
+            {% if vm.rating %}
+            <div class="col-md-2 d-flex justify-content-center m-2" id='rm-rt'>
+                <button class="btn btn-danger" id="removerating">Remove Rating</button>
+
+            </div>
+            {% else %}
+            <div class="col-md-2 hide d-flex justify-content-center m-2" id='rm-rt-temp'>
+                <button class="btn btn-danger" id="removerating">Remove Rating</button>
+
+            </div>
+            {% endif %}
+            <div>
+                {% if vm.rating %}
+                <p class='text-center' id="you-rated" style="color: yellow;">You rated : {{vm.rating}}</p>
+                {% else %}
+                <p class='text-center' id="you-rated" style="color: yellow;"></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <hr style="color: palegreen;">
+            </div>
+        </div>
+        <!-- trailor -->
+        <div class="row justify-content-center align-items-center">
+            <div class="col-auto">
+                <h3 class="sky-fg mb-0">
+                    Watch Trailer:
+                </h3>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto rounded" style="margin-top: 15px;">
+                {% video movie.trailor '700x600' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <hr style="color: palegreen;">
+            </div>
+        </div>
+        <!-- rewiews -->
+        <div class="row d-flex" style="justify-content: center;">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="reviewbox" class="form-label">Write A Review✍</label>
+                    <textarea class="form-control" id="reviewbox" rows="3" style="background-color: rgb(33, 7, 58); color:yellow" placeholder="Click here to write your review..."></textarea>
+                </div>
+                <button id="postreview" class="btn btn-light btn-sm rvbtn">Submit Review</button>
+                <button id="deletereview" class="btn btn-danger btn-sm rvbtn"><i class="bi bi-trash m-r"></i>Delete Review</button> {% if vm.review %}
+                <div class="my-review white-fg" id="my-rev">
+                    <h5>You Reviewed</h5>
+                    <label>{{vm.rtime}}</label>
+                    <hr>
+                    <p>{{vm.review}}</p>
+                </div>
+                {% else %}
+                <div class="my-review white-fg hide" id='my-rev-temp'>
+                    <h5>You Reviewed</h5>
+                    <label></label>
+                    <hr>
+                    <p></p>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <div class="col-md-4 ">
+                <div class="reviewsec white-fg ">
+                    <h2 style="color: rgb(255, 255, 255); ">Recent Reviews</h2>
+                    <hr class="white-fg "> {% for review in reviews %}
+                    <div class="submitted-review white-fg ">
+                        <h5><i class="bi bi-person " style="margin-right: 6px; "></i>{{review.reviewer}}</h5>
+                        <label><i class="bi bi-clock m-r "></i>{{review.time}}</label>
+                        <hr>
+                        <p>{{review.review}}</p>
+                    </div>
+                    {% endfor %}
+                    <p style="margin-top: 15px; "><a href="{% url 'reviews' movie.id %} " target="_blank " style="text-decoration:none ">Read All</a></p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row ">
+            <div class="col-md-1 "></div>
+            <div class="col-md-9 ">
+                <hr style="color: palegreen; ">
+            </div>
+        </div>
+
+        <style>
+            .my-button {
+                background-color: rgb(0, 0, 0);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 18px;
+                transition: all 0.3s ease;
+            }
+            
+            .my-button:hover {
+                background-color: rgb(255, 255, 255);
+                color: black;
+            }
+            
+            .my-button:active {
+                transform: scale(0.9);
+            }
+        </style>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-9">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'favourites' user.id %}" class="my-button mr-md-2" id="btdf">GO TO FAVOURITES</a>
+                    <a href="{% url 'watched' user.id %}" class="my-button mr-md-2" id="btdw">GO TO WATCHLIST</a>
+                    <a href="{% url 'dash' %}" class="my-button" id="btd">BACK TO DASHBOARD</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- <footer id="footer ">
+    <p><label>Movie Manifest</label><span>Site Settings</span><span>legal</span><span>Privacy Policy</span><span>Contact
+            Us</span></p>
+    <p><span>Cookie Settings</span><span>help</span><span>Site Settings</span>Admin</p>
+</footer> -->
+{% endblock%}

@@ -1,0 +1,108 @@
+{% extends 'myapp/base.html' %} {% block content %}
+<style>
+    /* CSS styles specific to the login page */
+    
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #111;
+    }
+    
+    .login-form {
+        width: 30%;
+        /* Đã thay đổi kích thước */
+        padding: 40px;
+        background-color: #222;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        color: #fff;
+    }
+    
+    .login-form:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .login-header h3 {
+        color: #f90;
+        font-size: 28px;
+        margin: 0;
+        font-weight: bold;
+    }
+    
+    .form-group label {
+        color: #fff;
+        font-weight: 600;
+    }
+    
+    .form-control {
+        background-color: #333;
+        color: #fff;
+        border: none;
+    }
+    
+    .form-control:focus {
+        box-shadow: none;
+    }
+    
+    .btn {
+        border-radius: 4px;
+        background-color: #f90;
+        border-color: #f90;
+        color: #fff;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+        background-color: #ff6600;
+        border-color: #ff6600;
+    }
+    
+    .signup-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .signup-link a {
+        color: #f90;
+        text-decoration: none;
+    }
+</style>
+<div class="login-container">
+    <div class="login-form">
+        <div class="login-header">
+            <h3>LOGIN</h3>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{form.username.auto_id}}"><i class="bi bi-person-fill"></i> {{form.username.label_tag}}</label> {{form.username}}
+            </div>
+            <div class="form-group">
+                <label for="{{form.password.auto_id}}"><i class="bi bi-key-fill"></i> {{form.password.label_tag}}</label> {{form.password}}
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <input type="submit" value="Login" class="btn btn-primary">
+            </div>
+        </form>
+        <div class="signup-link">
+            <p>Not Registered? <a href="{% url 'signup' %}">Sign Up</a
+                    href="{% url 'signup' %}"></a></p>
+        </div>
+        <!-- Thông báo lỗi khi nhập sai tên tài khoản mật khẩu-->
+        {% if form.errors %}
+        <p style="color: red; text-align: center;">Your username and password didn't match. <br> Please try again!</p>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
